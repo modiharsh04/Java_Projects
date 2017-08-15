@@ -1,59 +1,45 @@
-package practice;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 class RandomGenerator<T>{
-	
-	List<T> arr;
 
-	public RandomGenerator(ArrayList<T> arr){
-		this.arr = (ArrayList<T>) arr;
-	}
-
-	@SuppressWarnings("unchecked")
-	public void randomize(){
+	protected void randomize(List<T> arr){
 		int len = arr.size();
-		SecureRandom rand = new SecureRandom();
+		Random rand = new Random();
 		for (int i = len -1;i>0;i--){
 			int index = rand.nextInt(i);
-			String temp = (String) arr.get(index);
+			T temp = (T) arr.get(index);
 			arr.set(index,arr.get(i));
 			arr.set(i , (T) temp);
 		}
 	}
-
-	public String toString(){
-		String s ="";
-		for (int i=0;i<arr.size();++i){
-			s +="\n" + (i+1)+" --> "+arr.get(i);
-		}
-		return s;
-	}
 }
 
 public class RandomGeneratorDemo<T>{
-	public static void main(String[] args) {
-		Scanner reader = new Scanner(System.in);
-		ArrayList<String> arr = new ArrayList<String>();
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		// Console reader = System.console();
+		if (reader == null) {
+		    System.out.println("No console: non-interactive mode!");
+		    System.exit(0);
+		}
+		List<String> arr = new ArrayList<String>();
 		System.out.print("Enter number of elements of array: ");
 		try {
-			int entries = reader.nextInt();
-			reader.nextLine();
+			int entries = Integer.parseInt(reader.readLine().trim());
 			for (int i = 0; i < entries;++i) {
 				System.out.print("Enter value : ");
-				String value = reader.nextLine();
+				String value = reader.readLine().trim();
 				arr.add(value);
 			}
-		} catch (InputMismatchException e) {
+		} catch (NumberFormatException e) {
 			System.out.println("invalid input!..retry please !!");
 		} finally {
 			reader.close();
 		}
-		RandomGenerator<String> random1 = new RandomGenerator<>(arr);
-		random1.randomize();
-		System.out.println(random1);
+		RandomGenerator<String> random1 = new RandomGenerator<>();
+		random1.randomize(arr);
+		System.out.println(arr);
 	}
 }
